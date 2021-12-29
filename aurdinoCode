@@ -1,0 +1,37 @@
+#include <LiquidCrystal.h>
+int Contrast = 60;
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+int offset = 0; // voltage offset
+float resistance = 12.5;
+
+void setup()
+{
+  analogWrite(6, Contrast);
+  lcd.begin(16, 2);
+
+  lcd.setCursor(0, 0);
+  lcd.print("Volts  Amps  mW ");
+}
+
+void loop()
+{
+  // VOLTAGE MEASUREMENT
+  int volt = analogRead(A0);// read the input
+  float voltage = map(volt,0,1023, 0, 2500) + offset;// map 0-1023 to 0-2500 and add correction offset
+  voltage/=100; // divide by 100 to get the decimal values
+
+  float amps = voltage/resistance;
+  float milliwatts = voltage*amps*1000;
+
+  lcd.setCursor(0, 1);
+  lcd.print(voltage);
+  
+  lcd.setCursor(7, 1);
+  lcd.print(amps);
+   
+  lcd.setCursor(13, 1);
+  lcd.print(milliwatts);
+
+  delay(500);
+}
